@@ -1,5 +1,15 @@
 read -p "Escriba el nombre del usuario: " user1
 read -p "Escriba algun comentario o dejalo en blanco: " comentario
+#Generación de la contraseña
+while true; do
+    read -s -p "Ingresa una contraseña (minimo 8 caracteres): " pass
+    echo
+    if [ ${#pass} -ge 8 ]; then
+        break
+    else
+        echo "La contraseña debe tener al menos 8 caracteres."
+    fi
+done
 
 usuario="$user1"
 aleatorio="$RANDOM"
@@ -10,10 +20,10 @@ sentencia=$usuario-$aleatorio
 echo "El usuario sera $user1 "
 
 # Para crear usuario se realiza de esta manera
-pveum useradd $user1@pve -comment "$comentario"
+pveum useradd $user1@pve -comment "$comentario"  --password "$pass"
 
 # Asigna una contraseña al usuario "user1"
-pveum passwd $user1@pve
+#pveum passwd $user1@pve 
 
 # Crea un nuevo pool de recursos llamado "pool1"
 pveum pool add $sentencia --comment "$user1 pool"
@@ -30,7 +40,7 @@ pvesh set /pools/$sentencia --storage local-lvm
 
 #Para clonar un contenedor
 
-pct clone 104 --newid --name $aleatorio
+pct clone 113 --newid --name $aleatorio
 
 #Añadir maquinas al pool
 pvesh set /pools/$sentencia --vms $aleatorio
